@@ -1,0 +1,6 @@
+#省份	运营商	日志上传	帐号数	在线数	来源	拨号服务器
+BJ	LT	yes		188	3	IPFY	10.134.81.1
+TJ	LT	yes		198	83	IPFY	10.148.81.2
+AH	DX	yes		198	75	IPFY	10.152.81.3
+SB	LT	yes		197	0	IPFY	10.145.81.2
+BJ	DX	no		0	0	IPFY	10.145.81.2
