@@ -8,10 +8,12 @@ ReportDir = "./report/"
 DataDir="./data/"
 
 TimePre = time.strftime("%Y-%m-%d")
+TimePre = '2017-06-30'
 ReportName = TimePre + "-report.xlsx"
 ReportPath = os.path.join(ReportDir,ReportName)
 
 report_dic = {}
+pro_list = []
 
 def Config_init():
     try :
@@ -23,7 +25,9 @@ def Config_init():
                 CnName, AbbName, Ip, Company = pro_line.strip().split()
                 CnName = unicode(CnName,"utf-8")
                 Company = unicode(Company,"utf-8")
+                pro_list.append(AbbName)
             except ValueError as ve: 
+                print ve
                 print "Error line: ",pro_line
                 continue
             if not report_dic.has_key(AbbName):
@@ -123,20 +127,22 @@ def Load_log_logstat():
                 continue
             AbbName, Isp, Ups, Accn, Alin, src, ppp_ip =  recordList
             Isp = Isp.lower()
+            
             if Ups.upper() == 'NO' :
                 report_dic[AbbName]['logstat'][Isp]['upload'] = ['NO',1]
             elif Ups.upper() == 'YES' :
                 report_dic[AbbName]['logstat'][Isp]['upload'] = ['YES',0]
                 
-            if Accn == '0' :
-                report_dic[AbbName]['logstat'][Isp]['acc_sum'] = [Accn,1]
-            else :
-                report_dic[AbbName]['logstat'][Isp]['acc_sum'] = [Accn,0]
-                            
-            if Alin == '0' :
-                report_dic[AbbName]['logstat'][Isp]['ali_sum'] = [Alin,1]
-            else :
-                report_dic[AbbName]['logstat'][Isp]['ali_sum'] = [Alin,0]
+            if Accn.upper() != 'NULL' :
+                if Accn == '0' :
+                    report_dic[AbbName]['logstat'][Isp]['acc_sum'] = [Accn,1]
+                else :
+                    report_dic[AbbName]['logstat'][Isp]['acc_sum'] = [Accn,0]
+            if Alin.upper() != 'NULL' :                
+                if Alin == '0' :
+                    report_dic[AbbName]['logstat'][Isp]['ali_sum'] = [Alin,1]
+                else :
+                    report_dic[AbbName]['logstat'][Isp]['ali_sum'] = [Alin,0]
 
             report_dic[AbbName]['logstat'][Isp]['src'] = [src,0]
             report_dic[AbbName]['logstat'][Isp]['ppp_ip'] = [ppp_ip,0]
@@ -164,10 +170,11 @@ def Load_log_intact():
             else :
                 report_dic[AbbName]['intact'][Isp]['record'] = [rec_sum,0]
                 
-            if intact == '0%' :
-                report_dic[AbbName]['intact'][Isp]['intact'] = [intact,1]
-            else :
-                report_dic[AbbName]['intact'][Isp]['intact'] = [intact,0]
+            if intact.upper() != 'NULL' :   
+                if intact == '0%' :
+                    report_dic[AbbName]['intact'][Isp]['intact'] = [intact,1]
+                else :
+                    report_dic[AbbName]['intact'][Isp]['intact'] = [intact,0]
                             
                 
         finlog.close()
@@ -237,7 +244,8 @@ def Report():
     
     sys_index = 3
     intact_index = 3
-    for AbbName, pro_dic in report_dic.iteritems() :
+    for AbbName in pro_list :
+        pro_dic = report_dic[AbbName]
         Ip = pro_dic['bc_ip']
         Company = pro_dic['company']
         CnName = pro_dic['CnName']
@@ -256,9 +264,9 @@ def Report():
         dbf_v, dbf_s = pro_dic['system']['dbfile']
         xml_v, xml_s = pro_dic['system']['xml'] 
         Write_excel(workbook,SystemSheet,'C' + str(sys_index),net_v, net_s,'single')
-        Write_excel(workbook,SystemSheet,'D' + str(sys_index),pro_v, pro_s,'single')
-        Write_excel(workbook,SystemSheet,'E' + str(sys_index),dbs_v, dbs_s,'single')
-        Write_excel(workbook,SystemSheet,'F' + str(sys_index),dbd_v, dbd_s,'single')
+        Write_excel(workbook,SystemSheet,'D' + str(sys_index),dbs_v, dbs_s,'single')
+        Write_excel(workbook,SystemSheet,'E' + str(sys_index),dbd_v, dbd_s,'single')
+        Write_excel(workbook,SystemSheet,'F' + str(sys_index),pro_v, pro_s,'single')
         Write_excel(workbook,SystemSheet,'G' + str(sys_index),dbf_v, dbf_s,'single')
         Write_excel(workbook,SystemSheet,'H' + str(sys_index),xml_v, xml_s,'single')
 		
@@ -279,14 +287,14 @@ def Report():
         dx_int_v, dx_int_s = pro_dic['intact']['dx']['intact']
 		
         Write_excel(workbook,IntactSheet,'C' + str(intact_index),lt_up_v, lt_up_s,'single')
-        Write_excel(workbook,IntactSheet,'D' + str(intact_index),lt_rec_v, lt_rec_s,'single')
+        Write_excel(workbook,IntactSheet,'D' + str(intact_index),'NULL', 2,'single')
         Write_excel(workbook,IntactSheet,'E' + str(intact_index),lt_accn_v, lt_accn_s,'single')
         Write_excel(workbook,IntactSheet,'F' + str(intact_index),lt_alin_v, lt_alin_s,'single')
         Write_excel(workbook,IntactSheet,'G' + str(intact_index),lt_rec_v, lt_rec_s,'single')
         Write_excel(workbook,IntactSheet,'H' + str(intact_index),lt_int_v, lt_int_s,'single')
 
         Write_excel(workbook,IntactSheet,'C' + str(intact_index+1),dx_up_v, dx_up_s,'single')
-        Write_excel(workbook,IntactSheet,'D' + str(intact_index+1),dx_rec_v, dx_rec_s,'single')
+        Write_excel(workbook,IntactSheet,'D' + str(intact_index+1),'NULL', 2,'single')
         Write_excel(workbook,IntactSheet,'E' + str(intact_index+1),dx_accn_v, dx_accn_s,'single')
         Write_excel(workbook,IntactSheet,'F' + str(intact_index+1),dx_alin_v, dx_alin_s,'single')
         Write_excel(workbook,IntactSheet,'G' + str(intact_index+1),dx_rec_v, dx_rec_s,'single')

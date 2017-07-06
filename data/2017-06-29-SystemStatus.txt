@@ -1,5 +1,0 @@
-#省份	IP		程序运行状态	数据库状态	数据库数据	探针文件	数据库文件生成
-BJ	10.224.183.11	yes		yes		yes		yes		no
-TJ	10.238.183.11	yes		yes		no		no		yes
-AH	10.243.183.11	yes		yes		yes		yes		no
-SB	10.235.183.11	yes		yes		yes		yes		yes
