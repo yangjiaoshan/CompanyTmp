@@ -8,7 +8,7 @@ ReportDir = "./report/"
 DataDir="./data/"
 
 TimePre = time.strftime("%Y-%m-%d")
-TimePre = '2017-06-30'
+TimePre = '2017-07-16'
 ReportName = TimePre + "-report.xlsx"
 ReportPath = os.path.join(ReportDir,ReportName)
 
@@ -171,8 +171,9 @@ def Load_log_intact():
                 report_dic[AbbName]['intact'][Isp]['record'] = [rec_sum,0]
                 
             if intact.upper() != 'NULL' :   
-                if intact == '0%' :
+                if intact == '0.00%' :
                     report_dic[AbbName]['intact'][Isp]['intact'] = [intact,1]
+                    report_dic[AbbName]['intact'][Isp]['record'] = [rec_sum,1]
                 else :
                     report_dic[AbbName]['intact'][Isp]['intact'] = [intact,0]
                             
@@ -310,5 +311,5 @@ if __name__ == "__main__" :
     Load_log_system()
     Load_log_logstat()
     Load_log_intact()
-    print report_dic
+#     print report_dic
     Report()
